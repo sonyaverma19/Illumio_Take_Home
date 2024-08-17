@@ -14,6 +14,15 @@ class LookupTable:
 
         Returns:
             dict: A dictionary mapping (port, protocol) to tag.
+
+        Runtime:
+            O(n), where n is the number of lines in the lookup table file.
+            The function reads the file line by line, so the runtime is linear
+            with respect to the number of entries in the lookup table.
+
+        Space Complexity:
+            O(n), where n is the number of unique (port, protocol) combinations in the lookup table.
+            The space required grows linearly with the number of entries in the lookup table.
         """
         lookup_table = {}
         try:
@@ -38,6 +47,16 @@ class LookupTable:
 
         Returns:
             str: The tag associated with the port and protocol.
+
+        Time Complexity:
+            O(1) - Dictionary lookup is constant time on average.
+
+        Space Complexity:
+            O(1) - The function uses a constant amount of extra space,
+            regardless of the input size. However, note that if the
+            (port, protocol) combination is not in the lookup table,
+            it adds a new entry, which could potentially increase the
+            space used by the lookup table over multiple calls.
         """
         if (port, protocol) in self.lookup_table: 
             return self.lookup_table[(port,protocol)]
@@ -62,15 +81,31 @@ class FlowLogProcessor:
         Args:
             line (str): The original log line that caused the error.
             error_msg (str): The error message describing the issue.
+
+        Time Complexity:
+            O(1) - The operation of writing to a file is generally considered constant time,
+            as it doesn't depend on the size of the input.
+
+        Space Complexity:
+            O(n) - Where n is the combined length of the line and error_msg strings.
+            The space used is proportional to the length of these strings.
         """
         with open("error_log.txt", "a", encoding='utf-8') as error_file:
             error_file.write(f"Error in line: {line}\n")
             error_file.write(f"Error message: {error_msg}\n")
-        error_file.close() # Add a blank line and dashes for readability between errors
 
     def process_log(self):
         """
         Process the flow log file by categorizing based on port and protocol.
+
+        Time Complexity:
+            O(n), where n is the number of lines in the flow log file.
+            Each line is processed once, with constant-time operations per line.
+
+        Space Complexity:
+            O(m + k), where m is the number of unique port-protocol combinations
+            and k is the number of unique tags encountered.
+            The space is used by self.port_protocol_counts and self.tag_counts dictionaries.
         """
         with open(self.flow_log_file, "r", encoding='utf-8') as flow_file:
             for line in flow_file:
@@ -122,6 +157,13 @@ class FlowLogProcessor:
 
         Returns:
             int: The count associated with the specified tag.
+
+        Time Complexity:
+            O(1) - Dictionary lookup is constant time on average.
+
+        Space Complexity:
+            O(1) - The function uses a constant amount of additional space
+            regardless of the input size.
         """
         if tag not in self.tag_counts:
             return None
@@ -133,6 +175,12 @@ class FlowLogProcessor:
 
         Returns:
             dict: A dictionary containing all tag counts.
+
+        Time Complexity:
+            O(1) - This operation is a simple attribute access, which is constant time.
+
+        Space Complexity:
+            O(1) - No additional space is used; the function returns a reference to the existing dictionary.
         """
         return self.tag_counts
     
@@ -142,6 +190,12 @@ class FlowLogProcessor:
 
         Returns:
             dict: A dictionary containing all port-protocol combination counts.
+
+        Time Complexity:
+            O(1) - This operation is a simple attribute access, which is constant time.
+
+        Space Complexity:
+            O(1) - No additional space is used; the function returns a reference to the existing dictionary.
         """
         return self.port_protocol_counts
 
@@ -163,6 +217,18 @@ class Writer:
     def output_tag_counts(self, test, test_tag_counts):
         """
         Output the tag counts to a file.
+
+        Args:
+            test (bool): Flag to indicate if this is a test run.
+            test_tag_counts (dict): Tag counts to use for testing.
+
+        Time Complexity:
+            O(n), where n is the number of tags in the dictionary.
+            We iterate through all tags once to write them to the file.
+
+        Space Complexity:
+            O(1) - We use a constant amount of extra space regardless of input size.
+            The file writing is done in a streaming manner, not storing the entire output in memory.
         """
         if test:
             try:
@@ -170,7 +236,6 @@ class Writer:
                     tc_file.write("tag,count\n")
                     for tag, count in test_tag_counts.items():
                         tc_file.write(f"{tag},{count}\n")
-                tc_file.close()
             except IOError as e:
                 print(f"An error occurred while writing tag counts: {e}")
         else:
@@ -179,13 +244,24 @@ class Writer:
                     tc_file.write("tag,count\n")
                     for tag, count in self.tag_counts.items():
                         tc_file.write(f"{tag},{count}\n")
-                tc_file.close()
             except IOError as e:
                 print(f"An error occurred while writing tag counts: {e}")
         
     def output_port_protocol_counts(self, test, test_pp_counts):
         """
         Output the port-protocol combination counts to a file.
+
+        Args:
+            test (bool): Flag to indicate if this is a test run.
+            test_pp_counts (dict): Port-protocol counts to use for testing.
+
+        Time Complexity:
+            O(n), where n is the number of port-protocol combinations in the dictionary.
+            We iterate through all combinations once to write them to the file.
+
+        Space Complexity:
+            O(1) - We use a constant amount of extra space regardless of input size.
+            The file writing is done in a streaming manner, not storing the entire output in memory.
         """
         if test:
             try:
@@ -193,18 +269,16 @@ class Writer:
                     ppc_file.write("port,protocol,count\n")
                     for (port, protocol), count in test_pp_counts.items():
                         ppc_file.write(f"{port},{protocol},{count}\n")
-                ppc_file.close()
             except IOError as e:
                 print(f"An error occurred while writing port-protocol counts: {e}")
-
-        try:
-            with open("pp_counts.txt", "w", encoding='utf-8') as ppc_file:
-                ppc_file.write("port,protocol,count\n")
-                for (port, protocol), count in self.port_protocol_counts.items():
-                    ppc_file.write(f"{port},{protocol},{count}\n")
-            ppc_file.close()
-        except IOError as e:
-            print(f"An error occurred while writing port-protocol counts: {e}")
+        else:
+            try:
+                with open("pp_counts.txt", "w", encoding='utf-8') as ppc_file:
+                    ppc_file.write("port,protocol,count\n")
+                    for (port, protocol), count in self.port_protocol_counts.items():
+                        ppc_file.write(f"{port},{protocol},{count}\n")
+            except IOError as e:
+                print(f"An error occurred while writing port-protocol counts: {e}")
 
 
 
