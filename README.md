@@ -52,18 +52,21 @@ These validation steps ensure that only well-formed and valid data is processed,
 ## Description
 The utility consists of two main classes:
 1. `LookupTable`: Represents a lookup table that maps a port and protocol combination to a tag.
-2. `FlowLogProcessor`: Processes flow logs using a lookup table to categorize them based on port and protocol. The Processor class generates the two output files.
+2. `FlowLogProcessor`: Processes flow logs using a lookup table to categorize them based on port and protocol and creates dictionaries to store relevant information. 
+3. `Writer`: Generates and outputs tag count and port-protocol combination count plaintext files. 
 
 ## Installation
 1. Clone the repository.
-2. 2. Cd to the repo in your preferred terminal and execute using the command: python3 main.py.
+2. Cd to the repo in your preferred terminal and execute using the command: python3 main.py.
 
 ## Usage
 1. Create a lookup table CSV file with the format: `destport,protocol,tag`.
-2. Create a flow log file with the format: `data1,data2,...,dst_port,protocol`.
-3. Update the file paths in the test classes accordingly.
-4. Run the test classes to ensure the functionality of the `LookupTable`, `FlowLogProcessor`, and `Writer` classes. Refer to the testing section below for steps on how to do that.
-5. Modify the classes as needed for your specific use case.
+2. Create a flow log file with the format: `version, account-id, interface-id, srcaddr, dstaddr, src_port, dst_port,protocol, packets, bytes, start, end, action, log_status`.
+3. Update the file paths in the `config.json` file to point to your lookup table and flow log files.
+4. Run the main script using `python3 main.py` to process your files.
+5. Check the output files for the results.
+6. To run the test classes and ensure the functionality of the `LookupTable`, `FlowLogProcessor`, and `Writer` classes, use the command `python3 -m unittest`. Refer to the testing section below for more details.
+7. Modify the classes as needed for your specific use case.
 
 ## Assumptions
 1. The lookup table is a .csv file and the flow log is a .txt plaintext file encoded in utf-8. 
@@ -71,7 +74,7 @@ The utility consists of two main classes:
 3. Having read the VPC Flow Logs Amazon page (https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html) that was sent via email, I opted to structure the VPC Log based on the default log version.
 4. As such, all attributes in my sample log are based off that, and the dstPort and protocol data are strings 6 and 7 in accordance with Amazon's VPC Log order.
 5. The first line of the lookup table has dstport,protocol,tag in plaintext. The sample flow log does NOT have any such header to mimic the AWS VPC Logs. 
-6. On Line 45 in vpc_log_parser.py, I validate that protocol data is either "tcp" or "udp", assuming that these are the only two protocols present in the log. It was an assumption I had to make to filter out bad data.
+6. On Line 45 in vpc_log_parser.py, I validate that protocol data is either "tcp" or "udp", assuming that these are the only two protocols present in the log. It was an assumption I made based on the instructions.
 7. If there is no such port-protocol mapping, then the tag is classified as "untagged."
 8. The output files are plaintext files encoded in utf-8.
 
@@ -82,11 +85,13 @@ The utility includes a rough suite of unit tests to ensure the reliability and c
 1. Testing the `get_tag` function to ensure it is correctly retrieves a tag for known and unknown entries.
 2. Testing the `output_tag_counts` function to confirm it correctly aggregates tag counts across the flow log in the specified format.
 3. Testing the `output_port_protocol_counts` function to confirm it correctly aggregates port and protocol combination counts across the flow log in the specified format.
-4. Run using the python3 -m unittest command.
+4. Testing the `generate_tag_counts` function to ensure it correctly generates a dictionary of tag counts from the processed flow log data.
+5. Testing the `generate_port_protocol_counts` function to verify it accurately creates a dictionary of port-protocol combination counts from the processed flow log data.
+6. Run using the python3 -m unittest command.
 
 ## Notes to the Reviewer
 While there may exist more time-efficient and space-efficient methods to implement this program, the primary focus was to establish a working program accompanied by a suite of tests. This approach ensures that the core functionalities are reliable and correct, providing a solid foundation upon which optimizations can be incrementally introduced. The current implementation prioritizes clarity and correctness, setting the stage for future refinements. 
 
-I understand by reading line-by-line my program will scale well with the size of the file, but I also understand that there could be a bottleneck at the I/O read when it comes to unit testing. The sample flow log and lookup table are much smaller than the possible 10MB and 10000 mappings in the instructions, however the line-by-line file processing scales with file size and keeps the program's memory footprint relatively low so this program could theoretically be applied to a much larger sample flow log. 
+I understand by reading line-by-line my program will scale well with the size of the file, but I also understand that there could be a bottleneck at the I/O read when it comes to unit testing since the entire file is read into memory. The sample flow log and lookup table are much smaller than the possible 10MB size and 10000 mappings, however the line-by-line file processing scales with file size and keeps the program's memory footprint relatively low. This program could theoretically be applied to a much larger sample flow log. Given more time, I would have liked to implement a more efficient method of reading the file such as by using batch processing or a pub/sub model with a message queue. 
 
 I have chosen not to include a requirements.txt file because my program does not have any. I tested this by running pip3 freeze from within my virtual environment, and it did not output any requirements. I used a standard Python .gitignore template to prevent any unecessary files from clogging the repository. I also avoided using non-standard libraries for easier revision and running for the Illumio team.
