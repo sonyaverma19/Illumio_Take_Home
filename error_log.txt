@@ -1,0 +1,4 @@
+Error in line: 2,1g9wn8o0p9,eni-ghi23456,10.1.2.45,192.168.1.8,31,-1,udp,66324,8,1627843128,1627844128,ACCEPT,OK
+Error message: Port not within acceptable range: -1
+Error in line: 2,1g9wn8o0p9,eni-ghi23456,10.1.2.45,192.168.1.8,31,-1,udp,66324,8,1627843128,1627844128,ACCEPT,OK
+Error message: Invalid port number: -1

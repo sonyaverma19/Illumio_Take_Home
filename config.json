@@ -1,0 +1,4 @@
+{
+    "lookup_table_path": "sample_files/lookup_table.csv",
+    "flow_log_path": "sample_files/sample_flow_log.txt"
+}
