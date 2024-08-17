@@ -1,5 +1,14 @@
 # Illumio_Take_Home# Illumio_Take_Home
 
+## Author
+
+This project was created by Sonya Verma.
+
+- LinkedIn: [Sonya Verma](https://www.linkedin.com/in/sonya-verma/)
+- Email: sonyaverma23@gmail.com
+
+For any questions, suggestions, or feedback, please feel free to reach out.
+
 # Illumio_Take_Home
 This utility is a flow log processor that categorizes flow logs based on port and protocol using a lookup table. It outputs two plaintext files: tags and their respective counts, and port, protocol combinations and their respective counts. It aims to utilize the Single Responsibility Principle, SRP, where responsibilities are separated between classes/functions for clarity. 
 
