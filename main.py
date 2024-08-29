@@ -17,10 +17,12 @@ def main():
     flow_log_processor.process_log()
     tag_counts = flow_log_processor.get_tag_counts_dict()
     port_protocol_counts = flow_log_processor.get_port_protocol_counts_dict()
+    five_tuple_counts = flow_log_processor.get_five_tuple_counts_dict()
 
-    writer = Writer(tag_counts, port_protocol_counts)
+    writer = Writer(tag_counts, port_protocol_counts, five_tuple_counts)
     writer.output_tag_counts(False, tag_counts) # tag_counts is only used for testing
     writer.output_port_protocol_counts(False, port_protocol_counts) # port_protocol_counts is only used for testing
+    writer.output_five_tuple_counts()
 
 if __name__ == "__main__":
     main()

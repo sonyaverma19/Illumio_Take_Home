@@ -1,0 +1,8 @@
+port,protocol,count
+25,tcp,3
+443,tcp,3
+68,udp,3
+80,tcp,2
+23,tcp,2
+31,udp,1
+22,tcp,4

@@ -2,3 +2,35 @@ Error in line: 2,1g9wn8o0p9,eni-ghi23456,10.1.2.45,192.168.1.8,31,-1,udp,66324,8
 Error message: Port not within acceptable range: -1
 Error in line: 2,1g9wn8o0p9,eni-ghi23456,10.1.2.45,192.168.1.8,31,-1,udp,66324,8,1627843128,1627844128,ACCEPT,OK
 Error message: Invalid port number: -1
+Error in line: 2,1g9wn8o0p9,eni-ghi23456,10.1.2.45,192.168.1.8,31,-1,udp,66324,8,1627843128,1627844128,ACCEPT,OK
+Error message: Port not within acceptable range: -1
+Error in line: 2,12wkpqi0y3,eni-yza67890,10.1.5.11,192.168.9.14,31,80000,tcp,62225,8,1572494187,1572495187,ACCEPT,OK
+Error message: Port not within acceptable range: 80000
+Error in line: 2,nczsfys0wn,eni-hij56789,10.0.8.7,192.168.7.88,25,443,tpp,88388,8,1623145678,1623146678,ACCEPT,OK
+Error message: Protocol not within accepted values: tpp
+Error in line: a,2,j2lp7r4f9s,eni-wxy01234,172.16.7.42,172.16.2.53,80,80,tcp,61234,6,1723456789,1723457789,ACCEPT,OK
+Error message: Incorrect size of data: 15
+Error in line: 2,1g9wn8o0p9,eni-ghi23456,10.1.2.45,192.168.1.8,31,-1,udp,66324,8,1627843128,1627844128,ACCEPT,OK
+Error message: Port not within acceptable range: -1
+Error in line: 2,12wkpqi0y3,eni-yza67890,10.1.5.11,192.168.9.14,31,80000,tcp,62225,8,1572494187,1572495187,ACCEPT,OK
+Error message: Port not within acceptable range: 80000
+Error in line: 2,nczsfys0wn,eni-hij56789,10.0.8.7,192.168.7.88,25,443,tpp,88388,8,1623145678,1623146678,ACCEPT,OK
+Error message: Protocol not within accepted values: tpp
+Error in line: a,2,j2lp7r4f9s,eni-wxy01234,172.16.7.42,172.16.2.53,80,80,tcp,61234,6,1723456789,1723457789,ACCEPT,OK
+Error message: Incorrect size of data: 15
+Error in line: 2,123456789010,eni-1235b8ca123456789,172.31.16.139,172.31.16.21,143,22,6,20,4249,1418530010,1418530070,ACCEPT,OK
+Error message: Protocol not within accepted values: 6
+Error in line: 2,123456789010,eni-1235b8ca123456789,172.31.16.139,172.31.16.21,143,22,6,20,4249,1418530010,1418530070,ACCEPT,OK
+Error message: Protocol not within accepted values: 6
+Error in line: 2,123456789010,eni-1235b8ca123456789,172.31.16.139,172.31.16.21,143,22,6,20,4249,1418530010,1418530070,ACCEPT,OK
+Error message: Protocol not within accepted values: 6
+Error in line: 2,123456789010,eni-1235b8ca123456789,172.31.16.139,172.31.16.21,144,22,6,20,4249,1418530010,1418530070,ACCEPT,OK
+Error message: Protocol not within accepted values: 6
+Error in line: 2,1g9wn8o0p9,eni-ghi23456,10.1.2.45,192.168.1.8,31,-1,udp,66324,8,1627843128,1627844128,ACCEPT,OK
+Error message: Port not within acceptable range: -1
+Error in line: 2,12wkpqi0y3,eni-yza67890,10.1.5.11,192.168.9.14,31,80000,tcp,62225,8,1572494187,1572495187,ACCEPT,OK
+Error message: Port not within acceptable range: 80000
+Error in line: 2,nczsfys0wn,eni-hij56789,10.0.8.7,192.168.7.88,25,443,tpp,88388,8,1623145678,1623146678,ACCEPT,OK
+Error message: Protocol not within accepted values: tpp
+Error in line: a,2,j2lp7r4f9s,eni-wxy01234,172.16.7.42,172.16.2.53,80,80,tcp,61234,6,1723456789,1723457789,ACCEPT,OK
+Error message: Incorrect size of data: 15

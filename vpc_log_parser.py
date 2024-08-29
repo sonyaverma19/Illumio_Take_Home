@@ -73,6 +73,7 @@ class FlowLogProcessor:
         self.flow_log_file = flow_log_file
         self.tag_counts = {}
         self.port_protocol_counts = {}
+        self.five_tuple_counts = {}
     
     def write_to_error_log(self, line, error_msg):
         """
@@ -132,7 +133,19 @@ class FlowLogProcessor:
                     error_msg = f"Protocol not within accepted values: {protocol}"
                     self.write_to_error_log(line.strip(), error_msg)
                     continue
+            
                 
+                try:
+                    source_port = int(data[5])  # according to AWS VPC Flow Log Documentation for version 2, source port is the 6th field. If AWS changes the format or Illumio upgrades versions, this will need to be updated.
+                    if source_port < 0 or source_port > 65535:  # the universally acceptable range for ports is (0, 65535) according to RFC 793
+                        error_msg = f"Port not within acceptable range: {source_port}"
+                        self.write_to_error_log(line.strip(), error_msg)
+                        continue
+                except ValueError:
+                    error_msg = f"Invalid port number: {data[5]}"
+                    self.write_to_error_log(line.strip(), error_msg)
+                    continue
+
                 # update the port_protocol dictionary with the number of combination occurrences
                 port_protocol_key = (dst_port, protocol)
                 if port_protocol_key in self.port_protocol_counts:
@@ -146,6 +159,20 @@ class FlowLogProcessor:
                     self.tag_counts[tag] = 1
                 else:
                     self.tag_counts[tag] += 1
+
+                # update the five_tuple dictionary with the number of tuple occurences
+                # TODO: Add error checking for each data value that hasn't already been accounted for above
+                
+                # 172.31.16.139 172.31.16.21 143 22 6
+                source_ip = data[3]
+                dest_ip = data[4]
+                
+                five_tuple_key = (source_ip, dest_ip, source_port, dst_port, protocol)
+                if five_tuple_key in self.five_tuple_counts:
+                    self.five_tuple_counts[five_tuple_key] += 1 
+                else: 
+                    self.five_tuple_counts[five_tuple_key] = 1
+
         flow_file.close()
     
     def get_tag_counts(self, tag):
@@ -198,13 +225,16 @@ class FlowLogProcessor:
             O(1) - No additional space is used; the function returns a reference to the existing dictionary.
         """
         return self.port_protocol_counts
+    
+    def get_five_tuple_counts_dict(self):
+        return self.five_tuple_counts
 
 class Writer:
     """
     A class responsible for writing output files.
     """
 
-    def __init__(self, tag_counts, port_protocol_counts):
+    def __init__(self, tag_counts, port_protocol_counts, five_tuple_counts):
         """
         Initialize the Writer class.
 
@@ -213,6 +243,7 @@ class Writer:
         """
         self.port_protocol_counts = port_protocol_counts
         self.tag_counts = tag_counts
+        self.five_tuple_counts = five_tuple_counts
 
     def output_tag_counts(self, test, test_tag_counts):
         """
@@ -279,6 +310,24 @@ class Writer:
                         ppc_file.write(f"{port},{protocol},{count}\n")
             except IOError as e:
                 print(f"An error occurred while writing port-protocol counts: {e}")
+        
+    def output_five_tuple_counts(self):
+        # if test:
+        #     try:
+        #         with open("pp_counts.txt", "w", encoding='utf-8') as ppc_file:
+        #             ppc_file.write("port,protocol,count\n")
+        #             for (port, protocol), count in test_pp_counts.items():
+        #                 ppc_file.write(f"{port},{protocol},{count}\n")
+        #     except IOError as e:
+        #         print(f"An error occurred while writing port-protocol counts: {e}")
+        # else:
+        try:
+            with open("five_tuple_counts.txt", "w", encoding='utf-8') as ftc_file:
+                ftc_file.write("(source_ip, dest_ip, source_port, dest_port, protocol),count\n")
+                for (src_ip, dest_ip, src_port, dst_port, protocol), count in self.five_tuple_counts.items():
+                    ftc_file.write(f"({src_ip},{dest_ip},{src_port},{dst_port},{protocol}),{count}\n")
+        except IOError as e:
+            print(f"An error occurred while writing five tuple counts: {e}")
 
 
 
